@@ -1,4 +1,0 @@
-START Fiona Art
-START Mercutio Art
-END Fiona
-END Mercutio
