@@ -25,6 +25,7 @@
 # include "jrb.h"
 # include "dllist.h"
 
+// Keeps track of client information
 typedef struct {
     int fd ;
     FILE *fin  ;
@@ -33,6 +34,7 @@ typedef struct {
     struct room* room ;
 } client ;
 
+// Keeps track of room information 
 typedef struct {
     char* user ;
     Dllist clients  ;
@@ -66,19 +68,19 @@ void *clientThread( void *arg ){
     }
 
     // Outputs room names
-    if( fputs ( "Chat Rooms:\n\n", currClient->fout ) == EOF ){
-        fclose( currClient->fin )  ;
-        fclose( currClient->fout ) ;
-        pthread_exit( NULL ) ;
-    }
+    if( fputs ( "Chat Rooms:\n\n", currClient->fout ) == EOF ){}
     if( fflush( currClient->fout ) == EOF ){
         fclose( currClient->fin ) ;
         fclose( currClient->fout ) ;
         pthread_exit( NULL ) ;
     }
 
-    // Outputs who's online! (Each room user. )
-    jrb_traverse(tmpTree, threadTree) {
+    // Outputs who's online! (Each room user.)
+    // There is probably a more efficient way to do this, but one I removed
+    //      the extra fclose statements, I would get a "bad file descriptor"
+    //      error. If I had more time, I would investigate, but I really need
+    //      to just study for the exam lol 
+    jrb_traverse( tmpTree, threadTree ) {
         currRoom = ( room* ) tmpTree->val.v ;
         if( fputs( currRoom->user, currClient->fout ) == EOF){
             fclose( currClient->fin ) ;
