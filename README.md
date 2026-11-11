@@ -6,6 +6,8 @@ The lab spec is in [`index.html`](index.html). The server is in [`chat_server.c`
 
 ## How it works
 
+![Architecture diagram: main, client threads and room threads, with the shared data each touches, labeled by line number in chat_server.c](architecture.png)
+
 - **One thread per room.** Each room has a guest list, a message queue, a mutex and a condition variable. The room thread sleeps on the condition variable until a message is queued, then delivers it to everyone on the guest list.
 - **One thread per client.** Each client thread reads lines from its user. To post a join, a message or a leave, it locks the room, appends to the room's lists, signals the condition variable, and unlocks.
 - **One lock per room**, and no thread ever holds two, so lock ordering can't deadlock.
